@@ -1,2 +1,2 @@
-# pizza_sales
-Case study for Annalect
+# Pizza Sales
+A case study for Annalect/BMG
