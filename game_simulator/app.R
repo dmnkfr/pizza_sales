@@ -104,7 +104,7 @@ server <- function(input, output, session) {
       paste0(
         "It usually took ", data$mean_picks, " picks to find the box with money
              even though most of the time it was really just ", data$mode_picks, " pick. ",
-        "Only once, you had to pick ", data$max_picks,
+        "But you also had to pick ", data$max_picks,
         " times to find the cash. With just two boxes!"
       )
     }
