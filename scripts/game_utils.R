@@ -1,5 +1,4 @@
-## Game simulator utility file
-
+## Game simulator function
 ## Initialize values
 boxes <- c("full", "empty")
 yum <- 2
@@ -37,7 +36,6 @@ play_game <- function(n_of_plays) {
       }
     }
   }
-  
   results <- data.frame(results_picks,results_win)
   return(results)
 }
