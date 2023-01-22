@@ -22,6 +22,7 @@ explanatory power, but your thoughts behind it and the way you handle it in R.
 
 ### Solution
 The solution to these tasks is in the R notebook/markdown `./pizza_sales.Rmd`. All code is in the notebook except for the code loading and tidying the data, which is in `./scripts/clean_data.R`.
+A rendered version of the notebook can be found [here](https://dmnkfr.github.io/pizza_sales/).
 
 
 ## Task 2: Game simulator
