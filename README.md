@@ -1,5 +1,4 @@
 # Pizza Sales
-A case study for Annalect/BMG.
 
 ## Task 1: Pizza Sales EDA & modeling
 
