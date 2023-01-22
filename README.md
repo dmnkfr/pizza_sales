@@ -1,8 +1,7 @@
 # Pizza Sales
-A case study for Annalect/BMG
+A case study for Annalect/BMG.
 
-
-### Task 1: Pizza Sales EDA & modeling
+## Task 1: Pizza Sales EDA & modeling
 
 __Description__				
 				
@@ -22,9 +21,16 @@ __Tasks__
 You will not be evaluated on building the model with the highest 				
 explanatory power, but your thoughts behind it and the way you handle it in R.			
 
+### Solution
+The solution to these tasks is in the R notebook/markdown `./pizza_sales.Rmd`. All code is in the notebook except for the code loading and tidying the data, which is in `./scripts/clean_data.R`.
 
-### Task 2: Game simulator
+
+## Task 2: Game simulator
 Solve this task in R - There are 2 boxes - one contains 2$, the other one is empty. You have to pick one of them. If you pick non empty one, you get the value of that box. If you pick an empty one, boxes are randomly re-organized and the value of non-empty box is doubled. This goes on until you pick non empty box.				
 				
 1. Simulate this game as a function in R. 		
 2. Run simulation multiple times (ex. 100K) and calculate summary statistics like median, average, etc.
+
+### Solution
+Run the app in `./game_simulator/app.R` to simulate games and get summary statistics as text and visual output.
+The function capturing the game logic is in `./scripts/game_utils.R`.
