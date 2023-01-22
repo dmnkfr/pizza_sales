@@ -5,32 +5,35 @@ output:
   html_document:
     df_print: paged
 ---
-```{r setup, include=FALSE} 
+
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
 
 ## Libraries
 source("requirements.R")
 ```
+
 ### Preprocessing
-Please refer to `./scripts/clean_data.R` for loading and tidying the raw data. 
-After loading the relevant part of the raw excel file, the following steps were done:
- 
-  1. Clean variable names
-  2. Clean `year` and `week` variables
-  3. Filter data for week 53
-  4. Create a clean `date` variable from `year` and `week`
-  5. Combine all calendar variables to a single `holiday` variable
-  6. Sum all own campaign variables to single `own_campaigns` variable, since they do not overlapo in time
-  7. Sum all competitor campaign variables to single `competitor_campaigns_sum` variable
-  8. Average all competitor campaign variables to single `competitor_campaigns_mean` variable 
-  9. Sum all own and competitor campaign variables to single `campaigns_sum` variable 
-  10. Select relevant variables and write data to `./data/processed/data_clean.feather`
+
+Please refer to `./scripts/clean_data.R` for loading and tidying the raw data. After loading the relevant part of the raw excel file, the following steps were done:
+
+1.  Clean variable names
+2.  Clean `year` and `week` variables
+3.  Filter data for week 53
+4.  Create a clean `date` variable from `year` and `week`
+5.  Combine all calendar variables to a single `holiday` variable
+6.  Sum all own campaign variables to single `own_campaigns` variable, since they do not overlapo in time
+7.  Sum all competitor campaign variables to single `competitor_campaigns_sum` variable
+8.  Average all competitor campaign variables to single `competitor_campaigns_mean` variable
+9.  Sum all own and competitor campaign variables to single `campaigns_sum` variable
+10. Select relevant variables and write data to `./data/processed/data_clean.feather`
 
 ```{r, echo=False}
 source("./scripts/clean_data.R")
 ```
 
 Load and preview tidy data frame.
+
 ```{r, echo=False}
 data <- feather::read_feather("./data/processed/data_clean.feather") %>%
   mutate(
@@ -40,16 +43,21 @@ data <- feather::read_feather("./data/processed/data_clean.feather") %>%
 
 head(data) %>% tibble()
 ```
+
 A first glimpse at the central tendency our variables to get a first idea of our data set.
+
 ```{r, echo=False}
 data %>%
   select(-c(date, holiday, temperature, sun, precipitation, competitor_1:competitor_7)) %>%
   psych::describe(skew = FALSE)
 ```
-We can see that we have __data from five years 2017-2021.__ Our __own campaigns reach on average more people than our competitors' campaigns__ even though our reach varies way more. However, all competitors combined have of course a way greater reach than our campaigns.
+
+We can see that we have **data from five years 2017-2021.** Our **own campaigns reach on average more people than our competitors' campaigns** even though our reach varies way more. However, all competitors combined have of course a way greater reach than our campaigns.
 
 ### Task 1: Plot variables
-Let's first have a look at our main __KPI pizza sales__ from 2017 through 2021:
+
+Let's first have a look at our main **KPI pizza sales** from 2017 through 2021:
+
 ```{r sales_plot, echo=FALSE}
 data %>%
   ggplot(aes(x = date, y = pizza)) +
@@ -82,12 +90,14 @@ data %>%
   theme_ipsum(grid = TRUE)
   
 ```
+
 We get some first interesting insight:
 
-  1. There is __unseasonal variation__ 
-  2. Overall, sales increase. 
-  
+1.  There is **unseasonal variation**
+2.  Overall, sales increase.
+
 First, let's look at the same data aggregated by year.
+
 ```{r sales-agg, echo=FALSE}
 data %>%
   ggplot( aes(x=as.factor(year), y=pizza, fill=as.factor(year))) +
@@ -103,7 +113,7 @@ data %>%
     ylab("Pizza sales in pizzas")
 ```
 
-We see that the trend line in the first plot missed that 2021 actually saw a slight decrease in sales, which we can also see in below table that gives us __total sales per year.__
+We see that the trend line in the first plot missed that 2021 actually saw a slight decrease in sales, which we can also see in below table that gives us **total sales per year.**
 
 ```{r, echo=FALSE}
 data %>% 
@@ -111,8 +121,8 @@ data %>%
   summarise(total_pizza = round(sum(pizza),2)) %>% tibble()
 ```
 
-Let's look at the same data but with some other variables that could drive our sales, beginning with __sales offer__, which gives us the deviation from the standard price of our frozen pizza in percent.
-  
+Let's look at the same data but with some other variables that could drive our sales, beginning with **sales offer**, which gives us the deviation from the standard price of our frozen pizza in percent.
+
 ```{r sales-offer, echo=FALSE}
 sales_plot <- data %>%
   ggplot(aes(x = date, y = pizza)) +
@@ -165,7 +175,8 @@ gridExtra::grid.arrange(sales_plot,
   ncol = 1
 )
 ```
-Here we can already see a clear correlation between pizza price and sales. Let's look at the sales data in combination with our own __campaign data.__
+
+Here we can already see a clear correlation between pizza price and sales. Let's look at the sales data in combination with our own **campaign data.**
 
 ```{r sales-owncampaign, echo=FALSE}
 own_campaign_plot <- data %>%
@@ -195,7 +206,7 @@ gridExtra::grid.arrange(sales_plot,
 )
 ```
 
-We can see that some but not all campaigns drive our sales. Let's have a look at our __competitors' campaigns__. Specifically, we will look at the __total reach of all competitors combined.__
+We can see that some but not all campaigns drive our sales. Let's have a look at our **competitors' campaigns**. Specifically, we will look at the **total reach of all competitors combined.**
 
 ```{r sales-compcampaign, echo=FALSE}
 comp_campaign_plot <- data %>%
@@ -225,7 +236,7 @@ gridExtra::grid.arrange(sales_plot,
 )
 ```
 
-Let's look at a __correlation matrix of pizza sales, price offer, own campaign and competitor campaign reach.__
+Let's look at a **correlation matrix of pizza sales, price offer, own campaign and competitor campaign reach.**
 
 ```{r plot-campaign-offer-sales, echo=False}
 cor_cols <- c(
@@ -239,9 +250,9 @@ ggpairs(data, columns = cor_cols) +
   theme_ipsum()
 ```
 
-These all seem to be great candidates for sales predictors. 
+These all seem to be great candidates for sales predictors.
 
-Finally, let's also have a look at the weather variables, i.e., __temperature and precipitation__ over the five years, aggregated by month.
+Finally, let's also have a look at the weather variables, i.e., **temperature and precipitation** over the five years, aggregated by month.
 
 ```{r plot-weather, echo=False}
 data %>% 
@@ -268,7 +279,7 @@ data %>%
 
 ```
 
-__2021 was very rainy,__ which might explain the lower pizza sales to some degree. However, it was also the year (almost) post pandemic. Let's see if a correlation plot could corroborate this assumption.
+**2021 was very rainy,** which might explain the lower pizza sales to some degree. However, it was also the year (almost) post pandemic. Let's see if a correlation plot could corroborate this assumption.
 
 ```{r plot-weather-sales, echo=False}
 cor_cols <- c(
@@ -282,12 +293,13 @@ ggpairs(data, columns = cor_cols) +
   theme_ipsum()
 ```
 
-Not really. However, __temperature correlates both with hours of sun per day and precipitation in millimeters__, so we might use only temperature as a predictor later on.
+Not really. However, **temperature correlates both with hours of sun per day and precipitation in millimeters**, so we might use only temperature as a predictor later on.
 
-For now, we can summarize that __sales offer, our own as well as our competitors' campaign reach might be valuable sales predictors__.
+For now, we can summarize that **sales offer, our own as well as our competitors' campaign reach might be valuable sales predictors**.
 
 ### Task 2: Summary table
-A table with __min, max, total per variable__.
+
+A table with **min, max, total per variable**.
 
 ```{r summary-table, echo=False}
 data %>% 
@@ -310,7 +322,7 @@ data %>%
 
 ### Task 3: Model pizza sales
 
-For this task, we split data into a __training and test set.__ Let's assume we have data only for 2017-2020 and use it to predict the 2021 data. 
+For this task, we split data into a **training and test set.** Let's assume we have data only for 2017-2020 and use it to predict the 2021 data.
 
 ```{r linear-reg1, echo=False}
 training <- data %>% 
@@ -355,6 +367,7 @@ cor_cols <- c(
 ggpairs(data, columns = cor_cols) +
   theme_ipsum()
 ```
+
 Competitor 1 seems to run campaigns when our brand has a good price offer, therefore conflating our model. We'll exclude this competitor.
 
 ```{r linear-reg2, echo=False}
@@ -384,9 +397,9 @@ linear_model2 <- train(predictors, response,
 print(summary(linear_model2))
 ```
 
-We can see at the coefficients that `price_offer` and `own_campaign`are both excellent predictors of our sales. __Competitor 2__ seems to be a real competitor, having a strong negative impact on our sales. __Competitor 7__, on the other hand, has a beneficial influence, possibly due to similar product or campaign designs; the rest of the competitors' campaigns as well as temperature don't really drive our sales one way or the other, and, therefore, we ditch them.
+We can see at the coefficients that `price_offer` and `own_campaign`are both excellent predictors of our sales. **Competitor 2** seems to be a real competitor, having a strong negative impact on our sales. **Competitor 7**, on the other hand, has a beneficial influence, possibly due to similar product or campaign designs; the rest of the competitors' campaigns as well as temperature don't really drive our sales one way or the other, and, therefore, we ditch them.
 
-Let's assemble our __final model__ and see how well it does on the __unseen 2021 data.__
+Let's assemble our **final model** and see how well it does on the **unseen 2021 data.**
 
 ```{r linear-reg-fin, echo=False}
 predictors <- training[, c(
@@ -412,7 +425,7 @@ print(summary(linear_model))
 
 Again, first-glimpse model diagnostics look promising: Normally distributed residuals and a solid adjusted R-squared indicating that our model is able to explain 78.33% of the variance in the data.
 
-Let's test this on the unseen test set (the 2021 data). Below we see basic model performance metrics __RMS, Rsquared, and MAE.__ 
+Let's test this on the unseen test set (the 2021 data). Below we see basic model performance metrics **RMS, Rsquared, and MAE.**
 
 ```{r test-model, echo=False}
 test <- data %>% 
@@ -431,10 +444,10 @@ predictions <- predict(linear_model, test_predictors)
 postResample(predictions, test$pizza)
 
 ```
-We can see that we have a reasonably low prediction error, and the R-squared we get is highly comparable to the one we got for our training set, which is likely due to the cross validation approach we used. 
-Let's plot the __predicted versus actual pizza sales for 2021.__
 
-```{r plot-predictions}
+We can see that we have a reasonably low prediction error, and the R-squared we get is highly comparable to the one we got for our training set, which is likely due to the cross validation approach we used. Let's plot the **predicted versus actual pizza sales for 2021.**
+
+```{r plot-predictions, echo=False}
 test %>%
   ggplot(aes(x = date, y = pizza, 
              color = "Actual Sales")) +
@@ -462,18 +475,16 @@ test %>%
                         values = c("Actual Sales" = 1, "Predicted Sales" = 2))
 
 ```
-We can see that our model does a very good job, though overall slightly overestimating sales.
 
+We can see that our model does a very good job, though overall slightly overestimating sales.
 
 ### Task 4: Selecting predictor variables
 
-The __final model__ was `sales ~ price_offer + own_campaigns + competitor_2 + competitor_7 + holiday`.
-This was based on the following:
+The **final model** was `sales ~ price_offer + own_campaigns + competitor_2 + competitor_7 + holiday`. This was based on the following:
 
-  1. All own campaigns were combined to one variable since there was no overlap in time between campaigns 
-  2. `competitor_1` seemed to run campaigns when our brand has good price offers, which leads to correlation of these variables, and was thus removed. 
-  3. The rest of the `competitor_n` campaigns were removed based on the low influence on our sales variable as indicated by their coefficients.
-  4. _Weather variables__ `sun` and `precipitation` were removed since they correlated both with temperature.
-  5. `temperature` was removed based on its coefficient.
-  6. `holiday` had a strong negative impact, possibly indicating that some stores selling our product are closed on these days and therefore stayed in the model.
-  
+1.  All own campaigns were combined to one variable since there was no overlap in time between campaigns
+2.  `competitor_1` seemed to run campaigns when our brand has good price offers, which leads to correlation of these variables, and was thus removed.
+3.  The rest of the `competitor_n` campaigns were removed based on the low influence on our sales variable as indicated by their coefficients.
+4.  \_Weather variables\_\_ `sun` and `precipitation` were removed since they correlated both with temperature.
+5.  `temperature` was removed based on its coefficient.
+6.  `holiday` had a strong negative impact, possibly indicating that some stores selling our product are closed on these days and therefore stayed in the model.
