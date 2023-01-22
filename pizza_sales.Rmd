@@ -1,6 +1,9 @@
 ---
 title: "Pizza Sales - A Case Study"
-output: html_notebook
+output:
+  pdf_document: default
+  html_document:
+    df_print: paged
 ---
 ```{r setup, include=FALSE} 
 knitr::opts_chunk$set(warning = FALSE, message = FALSE)
