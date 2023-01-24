@@ -74,12 +74,12 @@ server <- function(input, output, session) {
       glue("Thanks for playing {n_plays} games.")
     }
   })
-  
+
   output$descr <- renderText({
     n_plays <- input$n_of_plays
-    "There are two boxes. One of them contains $2. 
-     If you pick the box with cash, you win. 
-     If you pick the empty box, the cash in the other box gets doubled. 
+    "There are two boxes. One of them contains $2.
+     If you pick the box with cash, you win.
+     If you pick the empty box, the cash in the other box gets doubled.
      Pick until you win!"
   })
 
@@ -106,7 +106,7 @@ server <- function(input, output, session) {
     data <- data()
     if (input$submit > 0) {
       text <- glue("On average, you won ${data$mean_win} per game, but your most
-                   common win was just ${data$mode_win}. However, in one game 
+                   common win was just ${data$mode_win}. However, in one game
                    you won an astonishing ${data$max_win}. Amazing, or?")
       text
     }
@@ -115,23 +115,23 @@ server <- function(input, output, session) {
   output$avg_picks <- renderText({
     data <- data()
     if (input$submit > 0) {
-      text <- glue("It usually took {data$mean_picks} picks to find the box with 
-                   money even though very often it was really just {data$mode_picks} 
-                   pick. But you also had to pick {data$max_picks} times to find 
+      text <- glue("It usually took {data$mean_picks} picks to find the box with
+                   money even though very often it was really just {data$mode_picks}
+                   pick. But you also had to pick {data$max_picks} times to find
                    the cash. With just two boxes!")
       text
     }
   })
-  
+
   output$summary_picks <- renderText({
     data <- data()
     if (input$submit > 0) {
-      text <- "Here you can see a plot summarizing the number of picks it took to 
+      text <- "Here you can see a plot summarizing the number of picks it took to
                find the box with cash:"
       text
     }
   })
-  
+
   output$summary_win <- renderText({
     data <- data()
     if (input$submit > 0) {
@@ -146,52 +146,40 @@ server <- function(input, output, session) {
   output$picks_plot <- renderPlot({
     results <- play_game(input$n_of_plays)
     if (input$submit > 0) {
-
       results <- play_game(input$n_of_plays)
       results$game_number <- 1:nrow(results)
-  
-      ggplot(data = results, aes(x = results_picks)) +
-                geom_bar(fill = "#4CA8C8") +
-                ggtitle("Number of Picks") +
-                xlab("Number of Picks") +
-                ylab("Frequency") +
-                scale_y_log10() +
-                theme_ipsum(plot_title_face = "plain",
-                            plot_title_size = 14,
-                            grid="Y")
-          
-      # p2 <- ggplot(data = results, aes(x = game_number, y = cumsum(results_win))) +
-      #   geom_line(color = "#9474CA", size=2) +
-      #   ggtitle("Accumulated Prize over Number of Games") +
-      #   xlab("Number of Games") +
-      #   ylab("Accumulated Prize in $") +
-      #   theme_ipsum() +
-      #         theme(plot.background = element_rect(fill = "#FAFAFA"),
-      #               panel.grid.major = element_blank(),
-      #               panel.grid.minor = element_blank(),
-      #               axis.line = element_blank())
-      # 
 
+      ggplot(data = results, aes(x = results_picks)) +
+        geom_bar(fill = "#4CA8C8") +
+        ggtitle("Number of Picks") +
+        xlab("Number of Picks") +
+        ylab("Frequency") +
+        scale_y_log10() +
+        theme_ipsum(
+          plot_title_face = "plain",
+          plot_title_size = 14,
+          grid = "Y"
+        )
     }
   })
-  
+
   output$wins_plot <- renderPlot({
     results <- play_game(input$n_of_plays)
     if (input$submit > 0) {
-
       results <- play_game(input$n_of_plays)
       results$game_number <- 1:nrow(results)
-          
+
       ggplot(data = results, aes(x = game_number, y = cumsum(results_win))) +
-        geom_line(color = "#9474CA", size=2) +
+        geom_line(color = "#9474CA", size = 2) +
         ggtitle("Accumulated Prize over Number of Games") +
         xlab("Number of Games") +
         ylab("Accumulated Prize in $") +
-                theme_ipsum(plot_title_face = "plain",
-                            plot_title_size = 14,
-                            grid="Y")
-      # 
-
+        theme_ipsum(
+          plot_title_face = "plain",
+          plot_title_size = 14,
+          grid = "Y"
+        )
+      #
     }
   })
 }
